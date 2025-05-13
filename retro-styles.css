@@ -1,0 +1,81 @@
+:root {
+  --primary-color: #9B5DE5;    /* Morado */
+  --secondary-color: #5B6EE1;  /* Azul */
+  --accent-color: #F15BB5;     /* Rosa */
+  --highlight-color: #FEE440;  /* Amarillo */
+  --tertiary-color: #00BBF9;   /* Azul claro */
+  --text-color: #ffffff;
+  --pixel-border: 4px;
+  --main-font: 'Courier New', monospace;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--primary-color);
+  background-image: linear-gradient(45deg, var(--primary-color) 25%, transparent 25%),
+                    linear-gradient(-45deg, var(--primary-color) 25%, transparent 25%),
+                    linear-gradient(45deg, transparent 75%, var(--primary-color) 75%),
+                    linear-gradient(-45deg, transparent 75%, var(--primary-color) 75%);
+  background-size: 20px 20px;
+  font-family: var(--main-font);
+  color: var(--text-color);
+}
+
+.retro-container {
+  background: var(--secondary-color);
+  border: var(--pixel-border) solid var(--text-color);
+  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.5);
+  padding: 20px;
+  margin: 20px;
+}
+
+.retro-button {
+  background: var(--accent-color);
+  border: none;
+  padding: 15px 30px;
+  color: var(--text-color);
+  font-family: var(--main-font);
+  text-transform: uppercase;
+  cursor: pointer;
+  position: relative;
+  box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
+  transition: all 0.1s ease;
+}
+
+.retro-button:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.5);
+}
+
+.retro-button:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+}
+
+.retro-grid {
+  display: grid;
+  gap: 20px;
+  padding: 20px;
+}
+
+.retro-card {
+  background: var(--secondary-color);
+  border: var(--pixel-border) solid var(--text-color);
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.retro-card:hover {
+  transform: scale(1.05);
+  box-shadow: 8px 8px 0 rgba(0, 0, 0, 0.5);
+}
+
+.retro-title {
+  font-size: 24px;
+  text-shadow: 4px 4px 0 rgba(0, 0, 0, 0.5);
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
