@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Normalización de Bases de Datos - Almacén de Zapatos</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f8fb;
+      color: #333;
+    }
+
+    header {
+      background: #004aad;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+
+    .container {
+      max-width: 950px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      transition: box-shadow 0.3s;
+    }
+    .card:hover {
+      box-shadow: 0 8px 24px rgba(0,74,173,0.15);
+    }
+
+    /* Tablas mejoradas */
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 18px 0;
+      font-size: 1rem;
+      background: #f9fbfd;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,74,173,0.07);
+    }
+    th, td {
+      padding: 10px 14px;
+      text-align: left;
+    }
+    th {
+      background: #004aad;
+      color: #fff;
+      font-weight: 600;
+      border-bottom: 2px solid #e0e7ef;
+    }
+    tr:nth-child(even) td {
+      background: #eef3f8;
+    }
+    tr:hover td {
+      background: #dbeafe;
+      transition: background 0.2s;
+    }
+    td {
+      border-bottom: 1px solid #e0e7ef;
+    }
+    table:last-child td {
+      border-bottom: none;
+    }
+
+    /* Botón animado */
+    button {
+      background: linear-gradient(90deg, #004aad 60%, #0066ff 100%);
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 10px;
+      font-size: 1rem;
+      font-weight: 500;
+      box-shadow: 0 2px 8px rgba(0,74,173,0.08);
+      transition: background 0.3s, transform 0.2s;
+    }
+    button:hover {
+      background: linear-gradient(90deg, #0066ff 60%, #004aad 100%);
+      transform: translateY(-2px) scale(1.04);
+    }
+
+    /* Animación de despliegue */
+    .hidden {
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: max-height 0.5s cubic-bezier(.4,0,.2,1), opacity 0.4s;
+      margin-top: 0;
+      pointer-events: none;
+    }
+    .show {
+      max-height: 1200px;
+      opacity: 1;
+      margin-top: 18px;
+      pointer-events: auto;
+      transition: max-height 0.7s cubic-bezier(.4,0,.2,1), opacity 0.5s;
+    }
+
+    pre {
+      background: #eef3f8;
+      padding: 10px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 1rem;
+      margin: 12px 0;
+      box-shadow: 0 2px 8px rgba(0,74,173,0.06);
+    }
+
+    img {
+      display: block;
+      margin: 20px auto;
+      max-width: 100%;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.13);
+    }
+
+    /* Responsive */
+    @media (max-width: 700px) {
+      .container {
+        padding: 8px;
+      }
+      .card {
+        padding: 12px;
+      }
+      table, th, td {
+        font-size: 0.95rem;
+      }
+      header h1 {
+        font-size: 1.3rem;
+      }
+    }
+    @media (max-width: 500px) {
+      table, th, td {
+        font-size: 0.89rem;
+        padding: 7px 6px;
+      }
+      .card {
+        margin: 10px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Normalización de Bases de Datos</h1>
+    <p>Ejemplo práctico: Almacén de Zapatos 👟</p>
+  </header>
+
+  <div class="container">
+    <!-- Introducción -->
+    <div class="card">
+      <h2>¿Qué es la Normalización?</h2>
+      <p>
+        La normalización organiza la información en una base de datos para evitar <strong>duplicados</strong> 
+        y mejorar la <strong>consistencia</strong>.  
+        Se logra aplicando pasos llamados <em>formas normales</em>.
+      </p>
+    </div>
+
+    <!-- Ejemplo inicial -->
+    <div class="card">
+      <h2>Ejemplo inicial (tabla sin normalizar)</h2>
+      <pre>
+Factura | Cliente | Dirección Cliente | Teléfono | Producto | Precio | Cantidad | Proveedor | Total
+-----------------------------------------------------------------------------------------------
+F001    | Ana     | Calle 12          | 3124567  | Nike Air | 250000 | 2        | Nike SA   | 500000
+F002    | Ana     | Calle 12          | 3124567  | Adidas   | 220000 | 1        | Adidas SA | 220000
+F003    | Luis    | Calle 20          | 3117890  | Puma     | 200000 | 3        | Puma Ltda | 600000
+      </pre>
+      <p>👉 Problemas: redundancia de clientes, proveedores y productos; difícil actualizar y mantener.</p>
+    </div>
+
+   <!-- 1FN -->
+<div class="card">
+  <h2>Primera Forma Normal (1FN)</h2>
+  <p>Se eliminan grupos repetidos y los datos deben ser <strong>atómicos</strong>.</p>
+  <button onclick="toggleInfo('fn1')">Ver Tablas en 1FN</button>
+  <div id="fn1" class="hidden">
+
+    <h3>Tabla Cliente 👤</h3>
+    <table>
+      <tr><th>id_cliente (PK)</th><th>nombre</th><th>apellido</th><th>direccion</th><th>telefono</th><th>correo</th></tr>
+      <tr><td>1</td><td>Ana</td><td>Pérez</td><td>Calle 12</td><td>3124567</td><td>ana@email.com</td></tr>
+      <tr><td>2</td><td>Luis</td><td>Gómez</td><td>Calle 20</td><td>3117890</td><td>luis@email.com</td></tr>
+    </table>
+
+    <h3>Tabla Producto 👟</h3>
+    <table>
+      <tr><th>id_producto (PK)</th><th>nombre_producto</th><th>descripcion</th><th>precio</th><th>stock</th></tr>
+      <tr><td>1</td><td>Nike Air</td><td>Deportivo</td><td>250000</td><td>10</td></tr>
+      <tr><td>2</td><td>Adidas</td><td>Casual</td><td>220000</td><td>15</td></tr>
+    </table>
+
+    <h3>Tabla Factura 🧾</h3>
+    <table>
+      <tr><th>id_factura (PK)</th><th>fecha</th><th>total</th><th>id_cliente (FK)</th></tr>
+      <tr><td>F001</td><td>2025-08-21</td><td>500000</td><td>1</td></tr>
+      <tr><td>F002</td><td>2025-08-21</td><td>220000</td><td>1</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- 2FN -->
+<div class="card">
+  <h2>Segunda Forma Normal (2FN)</h2>
+  <p>En la 2FN se eliminan dependencias parciales.</p>
+  <button onclick="toggleInfo('fn2')">Ver Tablas en 2FN</button>
+  <div id="fn2" class="hidden">
+
+    <h3>Tabla Detalle_Factura 📑</h3>
+    <table>
+      <tr><th>id_detalle (PK)</th><th>id_factura (FK)</th><th>id_producto (FK)</th><th>cantidad</th><th>subtotal</th></tr>
+      <tr><td>1</td><td>F001</td><td>1</td><td>2</td><td>500000</td></tr>
+      <tr><td>2</td><td>F002</td><td>2</td><td>1</td><td>220000</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- 3FN -->
+<div class="card">
+  <h2>Tercera Forma Normal (3FN)</h2>
+  <p>Se eliminan dependencias transitivas.</p>
+  <button onclick="toggleInfo('fn3')">Ver Tablas en 3FN</button>
+  <div id="fn3" class="hidden">
+
+    <h3>Tabla Proveedor 🚚</h3>
+    <table>
+      <tr><th>id_proveedor (PK)</th><th>nombre_proveedor</th><th>telefono</th><th>direccion</th><th>correo</th></tr>
+      <tr><td>1</td><td>Nike SA</td><td>3001234</td><td>Calle 45</td><td>contacto@nike.com</td></tr>
+    </table>
+
+    <h3>Tabla Compra 💰</h3>
+    <table>
+      <tr><th>id_compra (PK)</th><th>fecha_compra</th><th>id_proveedor (FK)</th><th>total_compra</th></tr>
+      <tr><td>C001</td><td>2025-08-21</td><td>1</td><td>1000000</td></tr>
+    </table>
+
+    <h3>Tabla Detalle_Compra 📦</h3>
+    <table>
+      <tr><th>id_detalle_compra (PK)</th><th>id_compra (FK)</th><th>id_producto (FK)</th><th>cantidad</th><th>costo_unitario</th><th>subtotal</th></tr>
+      <tr><td>1</td><td>C001</td><td>1</td><td>5</td><td>200000</td><td>1000000</td></tr>
+    </table>
+  </div>
+</div>
+
+    <!-- Esquema final gráfico -->
+    <div class="card">
+      <h2>📊 Esquema Final Normalizado</h2>
+      <p>Así queda el modelo de base de datos tras aplicar las 3 formas normales:</p>
+      <img src="diagrama.png" alt="Diagrama de la BD normalizada">
+    </div>
+  </div>
+
+  <footer>
+    <p>💡 Proyecto educativo - Normalización de BD (Grado 11, Colombia)</p>
+  </footer>
+
+  <script>
+    // Animación de despliegue suave para las secciones
+    function toggleInfo(id) {
+      const div = document.getElementById(id);
+      if (div.classList.contains("show")) {
+        div.classList.remove("show");
+        setTimeout(() => div.classList.add("hidden"), 10);
+      } else {
+        div.classList.remove("hidden");
+        setTimeout(() => div.classList.add("show"), 10);
+      }
+    }
+    // Inicialmente ocultar con hidden, show se añade al desplegar
+    document.querySelectorAll('.hidden').forEach(div => {
+      div.classList.remove('show');
+    });
+  </script>
+
+</body>
+</html>
